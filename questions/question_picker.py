@@ -1,4 +1,4 @@
-import questions
+from questions.questions import questions_trust_deeds, questions_annual_reports
 from exceptions.exceptions import LanguageNotSupportedException, DocumentNotSupportedException
 
 
@@ -17,10 +17,14 @@ class QuestionsPicker:
             raise LanguageNotSupportedException(f'language {self.doc_language} is not supported')
 
     def get_related_questions(self):
+        """
+        Searches for the related question based on document and language
+        :return:
+        """
         if self.doc_type == 'trust_deed':
-            doc_based_questions = questions.questions_trust_deeds
+            doc_based_questions = questions_trust_deeds
         elif self.doc_type == 'annual_report':
-            doc_based_questions = questions.questions_annual_reports
+            doc_based_questions = questions_annual_reports
         else:
             raise DocumentNotSupportedException(f'Document {self.doc_type} not supported')
 

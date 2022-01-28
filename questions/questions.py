@@ -11,7 +11,7 @@ questions_annual_reports = {
 }
 
 questions_trust_deeds = {
-    'en': ['What are the names of the settlors?'
+    'en': ['What are the names of the settlors?',
            'What are the names of trustees?'],
     'de': [],
     'fr': [],
