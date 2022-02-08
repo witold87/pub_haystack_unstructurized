@@ -5,7 +5,10 @@ converter = PDFToTextConverter(remove_numeric_tables=False)
 text = converter.convert(file_path='data/trust_deed_01.pdf')
 
 
-questions = QuestionsPicker(doc_type='trust_deed', doc_language='en').get_related_questions()
+#extract_doc_type
+
+questions = QuestionsPicker(doc_type='trust_deed', doc_language='en')\
+    .get_related_questions()
 print(questions)
 
 # preprocessor = PreProcessor(

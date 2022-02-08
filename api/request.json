@@ -1,0 +1,11 @@
+{
+  "doc_type": "annual_report",
+  "doc_language": "en",
+  "text": "text_from_doc",
+  "additional_questions": [
+    "Additional_question_1",
+    "Additional_question_2"
+  ],
+  "use_translation_api": false,
+  "top_n_answers_per_question": 1
+}
