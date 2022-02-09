@@ -43,7 +43,7 @@ class QAService(RequestHandler):
             clean_whitespace=True,
             clean_header_footer=False,
             split_by="word",
-            split_overlap=0,
+            split_overlap=3,
             split_length=100,
             split_respect_sentence_boundary=True
         )
