@@ -8,6 +8,7 @@ from tornado.web import RequestHandler
 
 from models.model_utils import setup_models_at_startup
 from questions.question_picker import QuestionsPicker
+import time
 
 readers = setup_models_at_startup()
 
@@ -32,6 +33,7 @@ class QAHealthCheck(RequestHandler):
 class QAService(RequestHandler):
 
     def get(self):
+        start_time = time.time()
         document_store = FAISSDocumentStore(faiss_index_factory_str='Flat')
         converter = PDFToTextConverter(remove_numeric_tables=False)
         text = converter.convert(file_path='data/2021-half-year-report-en.pdf')
@@ -41,7 +43,7 @@ class QAService(RequestHandler):
             clean_whitespace=True,
             clean_header_footer=False,
             split_by="word",
-            split_overlap=3,
+            split_overlap=0,
             split_length=100,
             split_respect_sentence_boundary=True
         )
@@ -72,7 +74,10 @@ class QAService(RequestHandler):
 
         preds = predict(questions, pipe)
 
+        end_time = time.time()
+        processed_time = end_time-start_time
         response = json.dumps({"doc_type": 'annual_report',
+                               "execution_time": f'{processed_time}s',
                                "predictions": preds})
 
         return self.finish(response)
