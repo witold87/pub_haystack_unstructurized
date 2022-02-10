@@ -4,5 +4,5 @@ models_names = {
     # "it": "mrm8488/bert-italian-finedtuned-squadv1-it-alfa",
     # "fr": "etalab-ia/camembert-base-squadFR-fquad-piaf",
     # "ch": "uer/roberta-base-chinese-extractive-qa",
-    #"multi": "deepset/xlm-roberta-large-squad2"
+    # "multi": "deepset/xlm-roberta-large-squad2"
 }

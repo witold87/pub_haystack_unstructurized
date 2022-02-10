@@ -44,7 +44,7 @@ class QAService(RequestHandler):
             clean_header_footer=False,
             split_by="word",
             split_overlap=3,
-            split_length=100,
+            split_length=130,
             split_respect_sentence_boundary=True
         )
 
@@ -81,3 +81,7 @@ class QAService(RequestHandler):
                                "predictions": preds})
 
         return self.finish(response)
+
+
+class QAService_static(RequestHandler):
+    pass
