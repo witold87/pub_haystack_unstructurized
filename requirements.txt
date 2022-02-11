@@ -1,2 +1,4 @@
 farm-haystack==0.8.0
 tornado==6.1
+ray==1.9.2
+
