@@ -1,0 +1,25 @@
+version: "0.9"
+
+components: # define all the building-blocks for Pipeline
+  - name: MyReader # custom-name for the component; helpful for visualization & debugging
+    type: FARMReader # Haystack Class name for the component
+    params:
+      no_ans_boost: -10
+      model_name_or_path: deepset/roberta-base-squad2
+  - name: DPR
+    type: TfidfRetriever
+    params:
+      document_store: MyStore # params can reference other components defined in the YAML
+  - name: MyStore
+    type: FAISSDocumentStore
+
+pipelines: # multiple Pipelines can be defined using the components from above
+  - name: my_query_pipeline # a simple extractive-qa Pipeline
+    type: Query
+    nodes:
+      - name: DPR
+        inputs: [Query]
+      - name: MyReader
+        inputs: [DPR]
+      - name: MyStore
+        inputs: [DPR]

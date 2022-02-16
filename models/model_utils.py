@@ -1,7 +1,9 @@
 from haystack.reader import FARMReader
 from models.supported_models import models_names
+from memory_profiler import profile
 
 
+@profile
 def setup_models_at_startup(use_gpu=False):
     loaded_readers = {}
     for key, value in models_names.items():

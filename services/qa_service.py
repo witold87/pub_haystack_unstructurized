@@ -1,22 +1,33 @@
 import json
+from pathlib import Path
 
+import ray
 from haystack.document_store.faiss import FAISSDocumentStore
+from haystack.document_store import InMemoryDocumentStore
+from haystack.document_store import ElasticsearchDocumentStore
 from haystack.file_converter.pdf import PDFToTextConverter
 from haystack.preprocessor import PreProcessor
 from haystack.retriever import DensePassageRetriever
+from haystack.retriever.sparse import ElasticsearchRetriever
 from tornado.web import RequestHandler
-
+from haystack.pipeline import ExtractiveQAPipeline
 from models.model_utils import setup_models_at_startup
 from questions.question_picker import QuestionsPicker
+from memory_profiler import profile
+from haystack.pipeline import Pipeline
 import time
 
 readers = setup_models_at_startup()
+#pipeline = Pipeline().load_from_yaml(Path('/home/wicio/PycharmProjects/pub_haystack/pipelines/pipeline.yaml'))
+#pipeline.load_from_yaml(Path("sample.yaml"))
 
 
+@profile
 def predict(questions, pipe):
     predictions = {}
     for question in questions:
         prediction = pipe.run(query=question)
+        print(prediction)
         predictions[question] = {'answer': prediction['answers'][0]['answer'],
                                  'probability': prediction['answers'][0]['probability'],
                                  'context': prediction['answers'][0]['context']}
@@ -43,8 +54,8 @@ class QAService(RequestHandler):
             clean_whitespace=True,
             clean_header_footer=False,
             split_by="word",
-            split_overlap=3,
-            split_length=130,
+            split_overlap=0,
+            split_length=100,
             split_respect_sentence_boundary=True
         )
 
@@ -64,15 +75,10 @@ class QAService(RequestHandler):
         retriever = DensePassageRetriever(document_store=document_store)
         document_store.update_embeddings(retriever)
 
-        from haystack.pipeline import ExtractiveQAPipeline
-
         questions = QuestionsPicker(doc_type='annual_report', doc_language='en').get_related_questions()
-        print(questions)
         selected_reader = readers.get('en')
-
-        pipe = ExtractiveQAPipeline(selected_reader, retriever)
-
-        preds = predict(questions, pipe)
+        pipeline = ExtractiveQAPipeline(reader=selected_reader, retriever=retriever)
+        preds = predict(questions, pipeline)
 
         end_time = time.time()
         processed_time = end_time-start_time
